@@ -43,12 +43,18 @@ console.log(arr);
 
 class RangeValidator {
   constructor(startingValue, endingValue) {
-    this._from = startingValue;
-    this._to = endingValue;
+    this.from = startingValue;
+    this.to = endingValue;
   }
   set from(startingValue) {
     if (typeof startingValue !== 'number') {
       throw new TypeError ('Starting value should be a number');
+    }
+    if (isNaN(startingValue)) {
+      throw new TypeError ('Starting value should not be NaN');
+    }
+    if (this._to !== undefined && startingValue > this._to) {
+      throw new RangeError ('Starting value should not be bigger than ending value');
     }
     this._from = startingValue;
   }
@@ -58,6 +64,12 @@ class RangeValidator {
   set to(endingValue) {
     if (typeof endingValue !== 'number') {
       throw new TypeError ('Ending value should be a number');
+    }
+    if (isNaN(endingValue)) {
+      throw new TypeError ('Ending value should not be NaN');
+    }
+    if (this._from > endingValue) {
+      throw new RangeError ('Ending value should not be less than starting value');
     }
     this._to = endingValue;
   }
@@ -71,20 +83,19 @@ class RangeValidator {
     if (typeof value !== 'number') {
       throw new TypeError ('This should be a number');
     }
-    if (value < this._from || value > this._to) {
+    if (value < this._from || value > this._to || isNaN(value)) {
       throw new RangeError ('This number is out of the range');
     } 
     return `${value} is in the range`;
-    
   }
 }
 
-const range1 = new RangeValidator(20, 100);
+const range1 = new RangeValidator(2, 10);
 console.log(range1);
-range1.from = 30;
+range1.from = 120;
 range1.to = 110;
 console.log(range1.from, range1.to, range1.range);
-console.log(range1.validate(29));
+console.log(range1.validate(-2));
 
 
 
